@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS Parkour: Ultimate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- CORE STYLES --- */
+        :root {
+            --bg-color: #0d1117;
+            --panel-color: #161b22;
+            --accent-color: #58a6ff;
+            --success-color: #2ea043;
+            --danger-color: #da3633;
+            --gold-color: #ffd700;
+            --text-color: #c9d1d9;
+        }
+
+        body {
+            font-family: 'Fira Code', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            user-select: none;
+            overflow: hidden;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* --- UI OVERLAYS (MENU, SHOP) --- */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(13, 17, 23, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            backdrop-filter: blur(5px);
+        }
+
+        .hidden { display: none !important; }
+
+        h1 { font-size: 40px; color: var(--accent-color); text-shadow: 0 0 15px var(--accent-color); margin-bottom: 20px; text-transform: uppercase; }
+        
+        .btn-big {
+            padding: 15px 40px;
+            font-size: 20px;
+            background: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(46, 160, 67, 0.5);
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+        .btn-big:hover { transform: scale(1.05); }
+
+        /* --- SHOP STYLES --- */
+        #shop-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .skin-item {
+            background: var(--panel-color);
+            border: 2px solid #30363d;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .skin-item:hover { border-color: var(--accent-color); }
+        .skin-item.owned { border-color: var(--success-color); }
+        .skin-item.selected { border-color: var(--gold-color); box-shadow: 0 0 10px var(--gold-color); }
+        
+        .skin-preview { width: 30px; height: 30px; margin: 0 auto 10px; border-radius: 4px; }
+
+        /* --- GAME CONTAINER --- */
+        #game-wrapper {
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #30363d;
+        }
+
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 400px;
+            background-color: #010409;
+            overflow: hidden;
+        }
+
+        /* --- GAME OBJECTS --- */
+        #player {
+            position: absolute;
+            width: 32px; height: 32px;
+            background-color: #ff9800;
+            border-radius: 4px;
+            z-index: 10;
+            /* Mắt nhân vật */
+            display: flex; justify-content: flex-end; align-items: flex-start;
+        }
+        #player::after {
+            content: ''; width: 6px; height: 6px; background: white; 
+            border-radius: 50%; margin: 6px 4px 0 0; box-shadow: -10px 0 0 white;
+        }
+
+        .ground {
+            position: absolute; background-color: #21262d; height: 40px; bottom: 50px;
+            border-top: 2px solid #30363d; box-sizing: border-box;
+        }
+        
+        /* THỬ THÁCH MỚI: GLITCH TRAP (BẪY GAI) */
+        .trap {
+            position: absolute; bottom: 50px; height: 10px;
+            background: repeating-linear-gradient(45deg, #da3633, #da3633 5px, #000 5px, #000 10px);
+            border-top: 2px solid #ff0000;
+            z-index: 5;
+        }
+
+        .flag {
+            position: absolute; width: 40px; height: 100px; bottom: 90px;
+            background: linear-gradient(to top, rgba(46, 160, 67, 0.2), transparent);
+            border-left: 2px solid var(--success-color);
+            display: flex; justify-content: center; align-items: center;
+            color: var(--success-color); font-weight: bold;
+        }
+
+        #target-object { position: absolute; bottom: 50px; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        /* --- UI LAYER --- */
+        #ui-layer {
+            position: absolute; top: 10px; left: 10px; right: 10px;
+            display: flex; justify-content: space-between; z-index: 100; pointer-events: none;
+        }
+        .badge {
+            background: rgba(22, 27, 34, 0.9); padding: 5px 12px;
+            border-radius: 15px; border: 1px solid var(--accent-color);
+            font-weight: bold; font-size: 14px;
+        }
+
+        /* --- EDITOR --- */
+        #editor-panel {
+            width: 800px; background: var(--panel-color); padding: 10px;
+            display: flex; gap: 10px; border-top: 1px solid #30363d;
+        }
+        textarea {
+            flex: 1; height: 60px; background: #0d1117; color: #a5d6ff;
+            border: 1px solid #30363d; padding: 10px;
+            font-family: 'Fira Code', monospace; resize: none; outline: none;
+        }
+        button.btn-small {
+            padding: 0 20px; background: var(--success-color); color: white;
+            border: none; border-radius: 4px; font-weight: bold; cursor: pointer;
+        }
+        button#btn-shop-open { background: var(--gold-color); color: #000; }
+
+        /* Hiệu ứng Shop */
+        .money-display { color: var(--gold-color); font-size: 1.2em; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" class="overlay">
+        <h1>CSS PARKOUR</h1>
+        <div style="font-size: 14px; color: #8b949e; margin-bottom: 20px;">Use ARROWS to Move | Use CSS to Fix World</div>
+        <button class="btn-big" onclick="startGame()">START GAME</button>
+        <div id="save-found-msg" style="color: var(--success-color); margin-top: 10px; display: none;">
+            ➤ Found Save Data!
+        </div>
+    </div>
+
+    <div id="shop-screen" class="overlay hidden">
+        <h2 style="color: var(--gold-color);">BLACK MARKET</h2>
+        <div class="money-display">Account Balance: $<span id="shop-money">0</span></div>
+        <div id="shop-grid">
+            </div>
+        <button class="btn-big" style="background: #30363d; margin-top: 20px;" onclick="closeShop()">CLOSE SHOP</button>
+    </div>
+
+    <div id="game-wrapper">
+        <div id="game-container">
+            <div id="ui-layer">
+                <div class="badge">LVL: <span id="lvl-display">1</span></div>
+                <div id="hint-text" style="background:rgba(0,0,0,0.7); padding:5px; border-radius:4px; font-size:12px; max-width: 400px; text-align: center;">...</div>
+                <div class="badge" style="border-color: var(--gold-color); color: var(--gold-color);">$: <span id="score-display">0</span></div>
+            </div>
+
+            <div id="player"></div>
+            <div id="world"></div>
+        </div>
+
+        <div id="editor-panel">
+            <button id="btn-shop-open" class="btn-small" onclick="openShop()">🛒</button>
+            <textarea id="css-input" placeholder="/* Enter CSS here... */"></textarea>
+            <button class="btn-small" onclick="applyCSS()">DEPLOY (Enter)</button>
+        </div>
+    </div>
+
+    <script>
+        // --- GAME DATA & STATE ---
+        const Game = {
+            level: 1,
+            money: 0,
+            skinsOwned: ['default'],
+            currentSkin: 'default',
+            isPaused: true,
+            player: { x: 50, y: 150, vy: 0, vx: 0, jumping: false },
+            targetId: ''
+        };
+
+        // --- SKIN DATABASE ---
+        const Skins = [
+            { id: 'default', name: 'Rookie', cost: 0, color: '#ff9800' },
+            { id: 'hacker', name: 'Hacker Green', cost: 200, color: '#2ea043' },
+            { id: 'cyber', name: 'Cyber Neon', cost: 500, color: '#00e5ff', shadow: '0 0 15px #00e5ff' },
+            { id: 'matrix', name: 'The Matrix', cost: 800, color: '#000', border: '1px solid #0f0' },
+            { id: 'gold', name: 'Master Gold', cost: 1500, color: '#ffd700', shadow: '0 0 20px #ffd700' }
+        ];
+
+        // --- DOM ELEMENTS ---
+        const els = {
+            player: document.getElementById('player'),
+            world: document.getElementById('world'),
+            input: document.getElementById('css-input'),
+            hint: document.getElementById('hint-text'),
+            startScreen: document.getElementById('start-screen'),
+            shopScreen: document.getElementById('shop-screen'),
+            score: document.getElementById('score-display'),
+            level: document.getElementById('lvl-display'),
+            shopMoney: document.getElementById('shop-money'),
+            shopGrid: document.getElementById('shop-grid'),
+            saveMsg: document.getElementById('save-found-msg')
+        };
+
+        // --- SAVE/LOAD SYSTEM ---
+        function loadData() {
+            const saved = localStorage.getItem('css_parkour_save_v1');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Game.level = data.level;
+                Game.money = data.money;
+                Game.skinsOwned = data.skinsOwned || ['default'];
+                Game.currentSkin = data.currentSkin || 'default';
+                els.saveMsg.style.display = 'block';
+            }
+            updateUI();
+            updatePlayerSkin();
+        }
+
+        function saveData() {
+            const data = {
+                level: Game.level,
+                money: Game.money,
+                skinsOwned: Game.skinsOwned,
+                currentSkin: Game.currentSkin
+            };
+            localStorage.setItem('css_parkour_save_v1', JSON.stringify(data));
+        }
+
+        // --- GAME LOGIC ---
+        function startGame() {
+            els.startScreen.classList.add('hidden');
+            Game.isPaused = false;
+            generateLevel();
+            updateLoop();
+        }
+
+        function generateLevel() {
+            // Reset Player
+            Game.player.x = 50; Game.player.y = 150; Game.player.vy = 0; Game.player.vx = 0;
+            els.input.value = "";
+            
+            // Random Challenge
+            const type = Math.floor(Math.random() * 4);
+            const rId = "obj-" + Math.floor(Math.random() * 999);
+            Game.targetId = rId;
+
+            let html = `<div class="ground" style="width: 200px; left: 0;"></div>`;
+            
+            // THỬ THÁCH MỚI: BẪY GAI (GLITCH TRAP)
+            // Nếu level > 2 thì có tỉ lệ 50% xuất hiện bẫy
+            if (Game.level > 2 && Math.random() > 0.5) {
+                html += `<div class="trap" style="left: 150px; width: 50px;"></div>`; 
+            }
+
+            if (type === 0) { // Cầu gãy
+                const gap = 200 + Math.random() * 150;
+                html += `<div id="${rId}" style="position: absolute; bottom: 50px; left: 200px; height: 40px; width: 0px; background: transparent; transition: all 0.5s;"></div>
+                         <div class="ground" style="width: 200px; left: ${200 + gap}px;"></div>
+                         <div class="flag" style="left: ${200 + gap + 150}px;">WIN</div>`;
+                els.hint.innerHTML = `⚠ Fix <b>#${rId}</b>: Thiếu <code>width</code> và <code>background-color</code>`;
+            } else if (type === 1) { // Tường chắn
+                html += `<div class="ground" style="width: 800px; left: 0;"></div>
+                         <div id="${rId}" style="position: absolute; bottom: 90px; left: 400px; width: 60px; height: 180px; background: #da3633; border: 2px solid white;"></div>
+                         <div class="flag" style="left: 700px;">WIN</div>`;
+                els.hint.innerHTML = `⚠ Fix <b>#${rId}</b>: Chắn đường! Dùng <code>display: none</code>`;
+            } else if (type === 2) { // Margin xa
+                html += `<div id="${rId}" class="ground" style="width: 300px; left: 600px; background-color: #58a6ff;"></div>
+                         <div class="flag" style="left: 750px;">WIN</div>`;
+                 els.hint.innerHTML = `⚠ Fix <b>#${rId}</b>: Xa quá! Dùng <code>margin-left: -200px</code>`;
+            } else { // Size sai
+                 html += `<div id="${rId}" style="position: absolute; bottom: 50px; left: 250px; width: 10px; height: 10px; background: #fff; transition: all 0.5s;"></div>
+                         <div class="ground" style="width: 200px; left: 550px;"></div>
+                         <div class="flag" style="left: 700px;">WIN</div>`;
+                 els.hint.innerHTML = `⚠ Fix <b>#${rId}</b>: Bé quá! Tăng <code>width</code> và <code>height</code>`;
+            }
+
+            els.world.innerHTML = html;
+            els.input.focus();
+        }
+
+        function applyCSS() {
+            const css = els.input.value;
+            const target = document.getElementById(Game.targetId);
+            if(target) {
+                target.style.cssText += css;
+                if(!target.style.position) target.style.position = 'absolute';
+            }
+            document.getElementById('game-wrapper').focus();
+        }
+
+        // --- SHOP FUNCTIONS ---
+        function openShop() {
+            Game.isPaused = true;
+            els.shopScreen.classList.remove('hidden');
+            renderShop();
+        }
+
+        function closeShop() {
+            els.shopScreen.classList.add('hidden');
+            Game.isPaused = false;
+            updateLoop();
+        }
+
+        function renderShop() {
+            els.shopMoney.innerText = Game.money;
+            els.shopGrid.innerHTML = '';
+            
+            Skins.forEach(skin => {
+                const isOwned = Game.skinsOwned.includes(skin.id);
+                const isSelected = Game.currentSkin === skin.id;
+                
+                const div = document.createElement('div');
+                div.className = `skin-item ${isOwned ? 'owned' : ''} ${isSelected ? 'selected' : ''}`;
+                
+                // Style preview box
+                let style = `background: ${skin.color};`;
+                if(skin.shadow) style += `box-shadow: ${skin.shadow};`;
+                if(skin.border) style += `border: ${skin.border};`;
+
+                div.innerHTML = `
+                    <div class="skin-preview" style="${style}"></div>
+                    <div style="font-weight:bold; font-size: 14px;">${skin.name}</div>
+                    <div style="font-size: 12px; color: #8b949e; margin-top:5px;">${isOwned ? (isSelected ? "EQUIPPED" : "OWNED") : "$" + skin.cost}</div>
+                `;
+                
+                div.onclick = () => {
+                    if (isOwned) {
+                        Game.currentSkin = skin.id;
+                        saveData();
+                        renderShop();
+                        updatePlayerSkin();
+                    } else {
+                        if (Game.money >= skin.cost) {
+                            Game.money -= skin.cost;
+                            Game.skinsOwned.push(skin.id);
+                            Game.currentSkin = skin.id;
+                            saveData();
+                            renderShop();
+                            updatePlayerSkin();
+                        } else {
+                            alert("Không đủ tiền! Hãy cày thêm level.");
+                        }
+                    }
+                };
+                els.shopGrid.appendChild(div);
+            });
+        }
+
+        function updatePlayerSkin() {
+            const skinData = Skins.find(s => s.id === Game.currentSkin);
+            els.player.style.background = skinData.color;
+            els.player.style.boxShadow = skinData.shadow || `0 0 10px ${skinData.color}`;
+            els.player.style.border = skinData.border || 'none';
+        }
+
+        // --- PHYSICS ENGINE ---
+        function updateLoop() {
+            if (Game.isPaused) return;
+
+            // Gravity & Move
+            Game.player.vy -= 1.5;
+            Game.player.y += Game.player.vy;
+            Game.player.x += Game.player.vx;
+
+            // Bounds
+            if (Game.player.x < 0) Game.player.x = 0;
+            if (Game.player.x > 770) Game.player.x = 770;
+
+            // Collisions
+            let onGround = false;
+            const obstacles = document.querySelectorAll('.ground, #world div:not(.flag):not(.trap)');
+            const traps = document.querySelectorAll('.trap');
+            
+            // Check Traps (Chết nếu chạm gai)
+            const pRect = { l: Game.player.x, r: Game.player.x + 32, t: 400 - (Game.player.y + 32), b: 400 - Game.player.y };
+            
+            traps.forEach(t => {
+                const r = t.getBoundingClientRect();
+                const c = document.getElementById('game-container').getBoundingClientRect();
+                const tRect = { l: r.left - c.left, r: r.right - c.left, t: r.top - c.top, b: r.bottom - c.top };
+                
+                if (pRect.r > tRect.l && pRect.l < tRect.r && pRect.b > tRect.t && pRect.t < tRect.b) {
+                    die();
+                }
+            });
+
+            // Check Platforms
+            obstacles.forEach(obj => {
+                const s = window.getComputedStyle(obj);
+                if (s.display === 'none' || s.opacity === '0' || s.visibility === 'hidden') return;
+
+                const r = obj.getBoundingClientRect();
+                const c = document.getElementById('game-container').getBoundingClientRect();
+                const oRect = { l: r.left - c.left, r: r.right - c.left, t: r.top - c.top, b: r.bottom - c.top };
+
+                if (pRect.r > oRect.l && pRect.l < oRect.r && pRect.b > oRect.t && pRect.t < oRect.b) {
+                    if (Game.player.vy <= 0 && pRect.b <= oRect.t + 20) {
+                        Game.player.y = 400 - oRect.t;
+                        Game.player.vy = 0;
+                        Game.player.jumping = false;
+                        onGround = true;
+                    } else {
+                        Game.player.x -= Game.player.vx;
+                    }
+                }
+            });
+
+            // Fall Death
+            if (Game.player.y < -50) die();
+
+            // Win Logic
+            const flag = document.querySelector('.flag');
+            if (flag) {
+                 const r = flag.getBoundingClientRect();
+                 const c = document.getElementById('game-container').getBoundingClientRect();
+                 const fRect = { l: r.left - c.left, r: r.right - c.left, t: r.top - c.top, b: r.bottom - c.top };
+                 if (pRect.r > fRect.l && pRect.l < fRect.r && pRect.b > fRect.t && pRect.t < fRect.b) {
+                     winLevel();
+                 }
+            }
+
+            // Render
+            els.player.style.bottom = Game.player.y + 'px';
+            els.player.style.left = Game.player.x + 'px';
+            
+            // Animation Tilt
+            const tilt = Game.player.vx > 0 ? -10 : (Game.player.vx < 0 ? 10 : 0);
+            els.player.style.transform = `skewX(${tilt}deg)`;
+
+            requestAnimationFrame(updateLoop);
+        }
+
+        function die() {
+            Game.player.x = 50;
+            Game.player.y = 150;
+            Game.player.vy = 0;
+        }
+
+        function winLevel() {
+            Game.level++;
+            Game.money += 100; // Cộng tiền
+            saveData();
+            updateUI();
+            generateLevel();
+        }
+
+        function updateUI() {
+            els.level.innerText = Game.level;
+            els.score.innerText = Game.money;
+        }
+
+        // --- INPUTS ---
+        document.addEventListener('keydown', e => {
+            if (document.activeElement === els.input && e.key !== 'Enter') return;
+            
+            if (e.key === 'ArrowLeft') Game.player.vx = -5;
+            if (e.key === 'ArrowRight') Game.player.vx = 5;
+            if (e.key === 'ArrowUp' && !Game.player.jumping) {
+                Game.player.vy = 22; Game.player.jumping = true;
+            }
+            if (e.key === 'Enter' && (e.ctrlKey || document.activeElement === els.input)) {
+                e.preventDefault(); applyCSS();
+            }
+        });
+        document.addEventListener('keyup', e => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') Game.player.vx = 0;
+        });
+
+        // Init
+        loadData();
+
+    </script>
+</body>
+</html>
