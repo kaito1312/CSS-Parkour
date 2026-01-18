@@ -2,521 +2,1413 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>CSS Parkour: Ultimate</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CSS Parkour: Dev Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Fira+Code:wght@400;600&family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* --- CORE STYLES --- */
         :root {
-            --bg-color: #0d1117;
-            --panel-color: #161b22;
-            --accent-color: #58a6ff;
-            --success-color: #2ea043;
-            --danger-color: #da3633;
-            --gold-color: #ffd700;
-            --text-color: #c9d1d9;
+            --bg-dark: #0d1117;
+            --bg-deep: #05070b;
+            --bg-surface: #0b0f14;
+            --panel-glass: rgba(22, 27, 34, 0.95);
+            --panel-glass-strong: rgba(10, 14, 20, 0.9);
+            --panel-border: rgba(88, 166, 255, 0.18);
+            --accent-cyan: #58a6ff;
+            --accent-pink: #ff7b72;
+            --accent-green: #3fb950;
+            --accent-gold: #d29922;
+            --text-main: #c9d1d9;
+            --text-dim: #8b949e;
+            --grid-line: rgba(48, 54, 61, 0.5);
+            --glow-cyan: rgba(88, 166, 255, 0.35);
+            --glow-pink: rgba(255, 123, 114, 0.3);
+            --glow-green: rgba(63, 185, 80, 0.3);
+            --suggestion-bg: #21262d;
+            --suggestion-hover: #1f6feb;
         }
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: 'Fira Code', monospace;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Exo 2', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            user-select: none;
             overflow: hidden;
-            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
+            touch-action: none;
+            position: relative;
+            isolation: isolate;
+            background:
+                radial-gradient(1200px 500px at 18% -10%, rgba(88, 166, 255, 0.18), transparent 60%),
+                radial-gradient(900px 600px at 85% 10%, rgba(255, 123, 114, 0.12), transparent 60%),
+                linear-gradient(180deg, #0b0f14 0%, #05070b 55%, #0b0f14 100%);
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.05) 0.5px, transparent 0.5px);
+            background-size: 3px 3px;
+            opacity: 0.12;
+            mix-blend-mode: soft-light;
+            pointer-events: none;
+            z-index: -1;
+        }
+        body::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(1200px 600px at 50% 20%, transparent 40%, rgba(0,0,0,0.55) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        /* Grid Background */
+        .bg-grid {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: perspective(700px) rotateX(60deg) translateY(-120px) translateZ(-200px);
+            animation: gridMove 24s linear infinite;
+            pointer-events: none;
+            z-index: -2;
+            opacity: 0.22;
+        }
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(35px);
+            opacity: 0.35;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            z-index: -3;
+        }
+        .orb-1 {
+            width: 520px;
+            height: 520px;
+            left: -10%;
+            top: -20%;
+            background: radial-gradient(circle, rgba(88, 166, 255, 0.35), transparent 60%);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .orb-2 {
+            width: 460px;
+            height: 460px;
+            right: -8%;
+            top: 8%;
+            background: radial-gradient(circle, rgba(63, 185, 80, 0.3), transparent 60%);
+            animation: orbFloatSlow 22s ease-in-out infinite;
+        }
+        .orb-3 {
+            width: 600px;
+            height: 600px;
+            left: 20%;
+            bottom: -30%;
+            background: radial-gradient(circle, rgba(255, 123, 114, 0.25), transparent 60%);
+            animation: orbFloat 26s ease-in-out infinite;
+        }
+        @keyframes gridMove {
+            0% { transform: perspective(700px) rotateX(60deg) translateY(-120px) translateZ(-200px); }
+            100% { transform: perspective(700px) rotateX(60deg) translateY(80px) translateZ(-200px); }
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(30px, -40px, 0); }
+        }
+        @keyframes orbFloatSlow {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(-20px, 30px, 0); }
         }
 
-        /* --- UI OVERLAYS (MENU, SHOP) --- */
+        /* UI OVERLAYS */
         .overlay {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(13, 17, 23, 0.95);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(1200px 600px at 50% 20%, rgba(22, 27, 34, 0.9), rgba(5, 7, 11, 0.95));
+            backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 200;
-            backdrop-filter: blur(5px);
+            z-index: 300;
+            transition: opacity 0.3s ease;
+            padding: 24px;
         }
-
-        .hidden { display: none !important; }
-
-        h1 { font-size: 40px; color: var(--accent-color); text-shadow: 0 0 15px var(--accent-color); margin-bottom: 20px; text-transform: uppercase; }
-        
-        .btn-big {
-            padding: 15px 40px;
-            font-size: 20px;
-            background: var(--success-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: bold;
-            box-shadow: 0 0 15px rgba(46, 160, 67, 0.5);
-            transition: transform 0.2s;
-            margin: 10px;
-        }
-        .btn-big:hover { transform: scale(1.05); }
-
-        /* --- SHOP STYLES --- */
-        #shop-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .skin-item {
-            background: var(--panel-color);
-            border: 2px solid #30363d;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-        .skin-item:hover { border-color: var(--accent-color); }
-        .skin-item.owned { border-color: var(--success-color); }
-        .skin-item.selected { border-color: var(--gold-color); box-shadow: 0 0 10px var(--gold-color); }
-        
-        .skin-preview { width: 30px; height: 30px; margin: 0 auto 10px; border-radius: 4px; }
-
-        /* --- GAME CONTAINER --- */
-        #game-wrapper {
+        .hidden { opacity: 0; pointer-events: none; }
+        .stagger { animation: riseIn 0.8s ease both; animation-delay: var(--delay, 0s); }
+        .screen-card {
+            width: min(90vw, 720px);
+            background: linear-gradient(160deg, rgba(15, 21, 30, 0.95), rgba(8, 12, 18, 0.92));
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 28px 30px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(88, 166, 255, 0.12);
             position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.5);
-            border-radius: 8px;
             overflow: hidden;
-            border: 1px solid #30363d;
+            text-align: center;
+        }
+        .screen-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(88, 166, 255, 0.12), transparent 35%, rgba(255, 123, 114, 0.12));
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .screen-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: rgba(88, 166, 255, 0.12);
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+        }
+        .screen-sub {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .screen-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+        .screen-foot { margin-top: 18px; display: grid; gap: 10px; }
+        .screen-tips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .screen-tips span {
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(10, 14, 20, 0.7);
+            border: 1px solid rgba(255,255,255,0.06);
+            font-family: 'Fira Code', monospace;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .version-tag {
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .save-msg {
+            min-height: 18px;
+            color: var(--accent-green);
+            margin-bottom: 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+        .screen-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(22px, 5vw, 32px);
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 6px 0 4px;
+            text-shadow: 0 0 18px rgba(210, 153, 34, 0.35);
+        }
+        .shop-card { max-width: 640px; }
+        .shop-credit {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-gold);
+            margin-bottom: 18px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(32px, 8vw, 56px);
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin-bottom: 16px;
+            text-align: center;
+            text-shadow: 0 0 30px rgba(88, 166, 255, 0.45), 0 0 80px rgba(88, 166, 255, 0.15);
+            animation: titleGlow 4s ease-in-out infinite;
+        }
+        h2 { font-family: 'Orbitron', sans-serif; letter-spacing: 4px; text-transform: uppercase; }
+        .btn {
+            position: relative;
+            padding: 14px 42px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #0a1118;
+            background: linear-gradient(135deg, rgba(63, 185, 80, 0.95), rgba(63, 185, 80, 0.65));
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 12px;
+            font-family: 'Fira Code', sans-serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.45), 0 0 20px var(--glow-green);
+            overflow: hidden;
+        }
+        .btn::after {
+            content: "";
+            position: absolute;
+            inset: 1px;
+            border-radius: 7px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+        .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+        .btn:hover::after { opacity: 1; }
+        .btn:active { transform: translateY(2px); box-shadow: 0 4px 12px rgba(0,0,0,0.35); } 
+        .btn-primary { background: linear-gradient(135deg, rgba(88, 166, 255, 0.95), rgba(88, 166, 255, 0.6)); color: #081018; box-shadow: 0 12px 30px rgba(0,0,0,0.45), 0 0 20px var(--glow-cyan); }
+        .btn-shop { background: linear-gradient(135deg, rgba(210, 153, 34, 0.95), rgba(210, 153, 34, 0.6)); color: #1b1402; box-shadow: 0 12px 30px rgba(0,0,0,0.45), 0 0 20px rgba(210, 153, 34, 0.35); }
+        .feature-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 10px; }
+        .feature-pill {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(10, 14, 20, 0.7);
+            border: 1px solid rgba(255,255,255,0.08);
+            font-family: 'Fira Code', monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-main);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
 
+        /* GAME FRAME */
+        #main-wrapper { width: 92vw; max-width: 1400px; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 2; animation: riseIn 0.8s ease both; }
+        #game-border {
+            position: relative;
+            width: 100%;
+            border: 1px solid rgba(48, 54, 61, 0.8);
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(8, 12, 18, 0.96), rgba(4, 6, 10, 0.98));
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(88, 166, 255, 0.08), 0 0 40px rgba(88, 166, 255, 0.12);
+        }
+        #game-border::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            background: linear-gradient(120deg, rgba(88, 166, 255, 0.18), transparent 35%, rgba(255, 123, 114, 0.15));
+            opacity: 0.35;
+            pointer-events: none;
+            z-index: 1;
+        }
+        #game-border::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), inset 0 0 24px rgba(0,0,0,0.6);
+            pointer-events: none;
+            z-index: 1;
+        }
         #game-container {
             position: relative;
-            width: 800px;
-            height: 400px;
-            background-color: #010409;
+            width: 100%;
+            height: clamp(360px, 60vh, 640px);
             overflow: hidden;
+            z-index: 2;
         }
-
-        /* --- GAME OBJECTS --- */
-        #player {
+        #game-container::before {
+            content: "";
             position: absolute;
-            width: 32px; height: 32px;
-            background-color: #ff9800;
-            border-radius: 4px;
-            z-index: 10;
-            /* Mắt nhân vật */
-            display: flex; justify-content: flex-end; align-items: flex-start;
+            inset: 0;
+            background:
+                radial-gradient(800px 300px at 50% 0%, rgba(88, 166, 255, 0.12), transparent 60%),
+                radial-gradient(600px 400px at 20% 100%, rgba(63, 185, 80, 0.08), transparent 60%),
+                linear-gradient(180deg, rgba(10, 14, 20, 0.95), rgba(4, 6, 9, 0.98));
+            z-index: 0;
         }
-        #player::after {
-            content: ''; width: 6px; height: 6px; background: white; 
-            border-radius: 50%; margin: 6px 4px 0 0; box-shadow: -10px 0 0 white;
+        #game-container::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 4px),
+                linear-gradient(180deg, rgba(88, 166, 255, 0.08) 0%, transparent 40%, rgba(255, 123, 114, 0.08) 100%);
+            background-size: auto, 100% 200%;
+            background-position: 0 0, 0 0;
+            animation: scanMove 12s linear infinite;
+            mix-blend-mode: screen;
+            opacity: 0.35;
+            pointer-events: none;
+            z-index: 1;
         }
+        #world { position: absolute; inset: 0; z-index: 1; }
+        @media (max-height: 600px) { #game-container { height: 45vh; } }
 
-        .ground {
-            position: absolute; background-color: #21262d; height: 40px; bottom: 50px;
-            border-top: 2px solid #30363d; box-sizing: border-box;
+        /* STORY & HUD */
+        #story-box {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            background: rgba(10, 14, 20, 0.85);
+            border: 1px solid var(--panel-border);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 10px 15px;
+            border-radius: 10px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
         }
-        
-        /* THỬ THÁCH MỚI: GLITCH TRAP (BẪY GAI) */
-        .trap {
-            position: absolute; bottom: 50px; height: 10px;
-            background: repeating-linear-gradient(45deg, #da3633, #da3633 5px, #000 5px, #000 10px);
-            border-top: 2px solid #ff0000;
-            z-index: 5;
+        #ai-avatar {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-cyan);
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(88, 166, 255, 0.12);
+            border: 1px solid rgba(88, 166, 255, 0.3);
         }
+        #story-text { font-family: 'Fira Code', monospace; font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+        .urgent { color: var(--accent-pink); }
+        .success { color: var(--accent-green); }
+        .hint-text { color: var(--accent-gold); }
 
-        .flag {
-            position: absolute; width: 40px; height: 100px; bottom: 90px;
-            background: linear-gradient(to top, rgba(46, 160, 67, 0.2), transparent);
-            border-left: 2px solid var(--success-color);
-            display: flex; justify-content: center; align-items: center;
-            color: var(--success-color); font-weight: bold;
+        .mission-complete {
+            position: absolute;
+            top: 30%;
+            width: 100%;
+            text-align: center;
+            font-family: 'Orbitron';
+            color: var(--accent-green);
+            font-size: 22px;
+            text-shadow: 0 0 20px var(--accent-green);
+            opacity: 0;
+            transition: 0.5s;
+            z-index: 100;
+            pointer-events: none;
+            letter-spacing: 4px;
         }
+        .mission-complete.show { opacity: 1; transform: scale(1.08); }
 
-        #target-object { position: absolute; bottom: 50px; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-
-        /* --- UI LAYER --- */
         #ui-layer {
-            position: absolute; top: 10px; left: 10px; right: 10px;
-            display: flex; justify-content: space-between; z-index: 100; pointer-events: none;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 110;
+            pointer-events: none;
         }
         .badge {
-            background: rgba(22, 27, 34, 0.9); padding: 5px 12px;
-            border-radius: 15px; border: 1px solid var(--accent-color);
-            font-weight: bold; font-size: 14px;
+            background: rgba(10, 14, 20, 0.8);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            padding: 6px 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: #c9d1d9;
+            border-radius: 999px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            backdrop-filter: blur(6px);
+        }
+        #btn-home {
+            pointer-events: auto;
+            cursor: pointer;
+            background: rgba(20, 24, 32, 0.9);
+            border: 1px solid rgba(255, 123, 114, 0.6);
+            color: var(--accent-pink);
+            width: 44px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.4);
         }
 
-        /* --- EDITOR --- */
-        #editor-panel {
-            width: 800px; background: var(--panel-color); padding: 10px;
-            display: flex; gap: 10px; border-top: 1px solid #30363d;
+        /* OBJECTS */
+        #player {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background-color: #ff9800;
+            border-radius: 6px;
+            z-index: 10;
+            overflow: hidden;
+            box-shadow: 0 0 18px rgba(255, 152, 0, 0.45);
+        }
+        #player::after {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.35);
+            opacity: 0.7;
+        }
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 9;
+            animation: particleRise 0.7s ease-out forwards;
+        }
+        .ground {
+            position: absolute;
+            background: linear-gradient(180deg, #1b222b, #0f141b);
+            height: 40px;
+            bottom: 50px;
+            border-top: 1px solid rgba(88, 166, 255, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+        .trap {
+            position: absolute;
+            bottom: 50px;
+            height: 10px;
+            z-index: 5;
+            background: repeating-linear-gradient(45deg, var(--accent-pink), var(--accent-pink) 8px, #000 8px, #000 16px);
+            box-shadow: 0 0 12px rgba(255, 123, 114, 0.5);
+            animation: hazardMove 1.2s linear infinite;
+        }
+        .flag {
+            position: absolute;
+            width: 3px;
+            height: 110px;
+            bottom: 90px;
+            background: linear-gradient(180deg, var(--accent-green), transparent);
+            box-shadow: 0 0 20px rgba(63, 185, 80, 0.7);
+            animation: flagPulse 2s ease-in-out infinite;
+        }
+        .flag::after {
+            content: 'WIN';
+            position: absolute;
+            top: 0;
+            background: var(--accent-green);
+            color: #000;
+            padding: 2px 5px;
+            font-size: 10px;
+            font-weight: bold;
+            font-family: 'Fira Code', monospace;
+            letter-spacing: 1px;
+        }
+        .deco {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.45;
+            mix-blend-mode: screen;
+        }
+        .deco-spark {
+            height: 2px;
+            width: var(--size, 18px);
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.9), transparent);
+            animation: sparkDrift var(--dur, 6s) linear infinite;
+        }
+        .deco-chip {
+            width: var(--size, 12px);
+            height: var(--size, 12px);
+            border-radius: 3px;
+            border: 1px solid rgba(88, 166, 255, 0.55);
+            background: rgba(12, 18, 28, 0.6);
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.2);
+            animation: chipFloat var(--dur, 8s) ease-in-out infinite;
+        }
+        .deco-ring {
+            width: var(--size, 26px);
+            height: var(--size, 26px);
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 123, 114, 0.6);
+            animation: ringPulse var(--dur, 7s) ease-in-out infinite;
+        }
+
+        /* EDITOR AREAS */
+        #desktop-panel {
+            width: 100%;
+            background: rgba(12, 16, 22, 0.9);
+            padding: 12px;
+            display: flex;
+            gap: 10px;
+            border: 1px solid rgba(48, 54, 61, 0.7);
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
         }
         textarea {
-            flex: 1; height: 60px; background: #0d1117; color: #a5d6ff;
-            border: 1px solid #30363d; padding: 10px;
-            font-family: 'Fira Code', monospace; resize: none; outline: none;
+            flex: 1;
+            background: linear-gradient(180deg, rgba(12, 16, 22, 0.95), rgba(7, 10, 14, 0.98));
+            color: var(--accent-cyan);
+            border: 1px solid rgba(88, 166, 255, 0.25);
+            padding: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            height: 70px;
+            border-radius: 8px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+            caret-color: var(--accent-cyan);
         }
-        button.btn-small {
-            padding: 0 20px; background: var(--success-color); color: white;
-            border: none; border-radius: 4px; font-weight: bold; cursor: pointer;
+        textarea::placeholder { color: rgba(201, 209, 217, 0.45); }
+        textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.15); }
+        .btn-control {
+            border: 1px solid rgba(88, 166, 255, 0.18);
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            font-size: 10px;
+            background: rgba(20, 24, 32, 0.8);
+            color: #c9d1d9;
+            padding: 0 14px;
+            transition: 0.2s ease;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        button#btn-shop-open { background: var(--gold-color); color: #000; }
+        .btn-control:hover { background: rgba(88, 166, 255, 0.12); color: white; border-color: rgba(88, 166, 255, 0.4); }
+        .btn-deploy { background: linear-gradient(135deg, rgba(63, 185, 80, 0.95), rgba(63, 185, 80, 0.7)); color: #06130e; border-color: rgba(63, 185, 80, 0.6); }
+        .btn-skip { background: linear-gradient(135deg, rgba(210, 153, 34, 0.95), rgba(210, 153, 34, 0.65)); color: #1b1402; border-color: rgba(210, 153, 34, 0.6); }
+        .btn-buy { background: linear-gradient(135deg, rgba(255, 123, 114, 0.95), rgba(255, 123, 114, 0.65)); color: #150505; border-color: rgba(255, 123, 114, 0.6); }
+        .btn-hint { color: var(--accent-cyan); border-color: rgba(88, 166, 255, 0.6); }
 
-        /* Hiệu ứng Shop */
-        .money-display { color: var(--gold-color); font-size: 1.2em; margin-bottom: 10px; }
+        /* AUTOCOMPLETE BOX (VS CODE STYLE) */
+        #autocomplete-box { 
+            position: absolute;
+            background: rgba(14, 20, 28, 0.98);
+            border: 1px solid rgba(88, 166, 255, 0.25);
+            width: 250px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .suggestion-item { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #c9d1d9; cursor: pointer; display: flex; justify-content: space-between; align-items: center;}
+        .suggestion-item:hover { background: rgba(88, 166, 255, 0.2); color: #fff; }
+        .prop-val { color: #8b949e; font-size: 10px; font-style: italic;}
+        .suggestion-item:hover .prop-val { color: #ddd; }
+
+        /* MOBILE CONTROLS */
+        #mobile-controls {
+            display: none;
+            width: 100%;
+            padding: 12px 14px;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(12, 16, 22, 0.9);
+            margin-top: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(48, 54, 61, 0.7);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+        }
+        .touch-btn {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at top, rgba(88, 166, 255, 0.18), rgba(16, 22, 30, 0.9));
+            border: 1px solid rgba(88, 166, 255, 0.25);
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-family: 'Fira Code', monospace;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+        .touch-btn:active { background: rgba(88, 166, 255, 0.4); transform: translateY(2px) scale(0.98); }
+        .touch-btn.touch-edit {
+            width: 80px;
+            border-radius: 12px;
+            color: var(--accent-cyan);
+            border-color: rgba(88, 166, 255, 0.6);
+            background: radial-gradient(circle at top, rgba(88, 166, 255, 0.25), rgba(16, 22, 30, 0.9));
+        }
+        .touch-btn.touch-jump {
+            border-color: rgba(63, 185, 80, 0.6);
+            color: var(--accent-green);
+            background: radial-gradient(circle at top, rgba(63, 185, 80, 0.25), rgba(16, 22, 30, 0.9));
+        }
+        #mobile-editor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 55%;
+            background: linear-gradient(180deg, rgba(8, 12, 18, 0.98), rgba(6, 8, 12, 0.98));
+            z-index: 200;
+            border-top: 2px solid rgba(88, 166, 255, 0.5);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 -20px 40px rgba(0,0,0,0.6);
+        }
+
+        @media (max-width: 768px) { #mobile-controls { display: flex; } #desktop-panel { display: none; } }
+        @media (min-width: 769px) { #mobile-editor { display: none !important; } }
+        @media (max-width: 600px) {
+            .screen-card { padding: 20px; }
+            .screen-sub { letter-spacing: 1px; }
+            .screen-tips { display: none; }
+            #btn-home { width: 38px; }
+            .badge { font-size: 10px; }
+            #shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        /* SHOP */
+        #shop-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; max-width: 520px; width: 100%; margin-bottom: 20px; }
+        .skin-item {
+            background: rgba(12, 16, 22, 0.85);
+            border: 1px solid rgba(88, 166, 255, 0.18);
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.35);
+        }
+        .skin-item:hover { transform: translateY(-3px); box-shadow: 0 16px 30px rgba(0,0,0,0.4); }
+        .skin-item.owned { border-color: rgba(63, 185, 80, 0.6); color: var(--accent-green); }
+        .skin-item.selected { border-color: rgba(88, 166, 255, 0.8); box-shadow: 0 0 20px rgba(88, 166, 255, 0.35); }
+        
+        .shake-effect { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 30px rgba(88, 166, 255, 0.45), 0 0 80px rgba(88, 166, 255, 0.15); }
+            50% { text-shadow: 0 0 45px rgba(88, 166, 255, 0.7), 0 0 100px rgba(88, 166, 255, 0.25); }
+        }
+        @keyframes riseIn {
+            0% { opacity: 0; transform: translateY(12px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes scanMove {
+            0% { background-position: 0 0, 0 0; }
+            100% { background-position: 0 0, 0 200%; }
+        }
+        @keyframes hazardMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 0; }
+        }
+        @keyframes flagPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(63, 185, 80, 0.6); }
+            50% { box-shadow: 0 0 30px rgba(63, 185, 80, 0.9); }
+        }
+        @keyframes sparkDrift {
+            0% { transform: translateX(-10px); opacity: 0; }
+            40% { opacity: 0.8; }
+            100% { transform: translateX(20px); opacity: 0; }
+        }
+        @keyframes chipFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes ringPulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+        @keyframes playerPulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.25); }
+        }
+        @keyframes playerFlicker {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.25); }
+        }
+        @keyframes playerFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        @keyframes playerGlitch {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            50% { transform: translateX(2px); }
+            75% { transform: translateX(-1px); }
+        }
+        @keyframes particleRise {
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            100% { transform: translateY(-18px) scale(0); opacity: 0; }
+        }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
     </style>
 </head>
 <body>
 
+    <div class="bg-grid"></div>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+    <div id="autocomplete-box"></div>
+
     <div id="start-screen" class="overlay">
-        <h1>CSS PARKOUR</h1>
-        <div style="font-size: 14px; color: #8b949e; margin-bottom: 20px;">Use ARROWS to Move | Use CSS to Fix World</div>
-        <button class="btn-big" onclick="startGame()">START GAME</button>
-        <div id="save-found-msg" style="color: var(--success-color); margin-top: 10px; display: none;">
-            ➤ Found Save Data!
+        <div class="screen-card">
+            <div class="screen-tag stagger" style="--delay: 0.05s;">DEV EDITION</div>
+            <h1 class="stagger" style="--delay: 0.1s;">CSS PARKOUR</h1>
+            <div class="screen-sub stagger" style="--delay: 0.15s;">RUN THE CODE. LAND THE JUMP.</div>
+            <div id="save-msg" class="save-msg stagger" style="--delay: 0.2s;"></div>
+            <div class="screen-actions">
+                <button class="btn btn-primary stagger" style="--delay: 0.25s;" onclick="startGame()">START RUN</button>
+                <button class="btn btn-shop stagger" style="--delay: 0.3s;" onclick="openShop()">OPEN EXTENSIONS</button>
+            </div>
+            <div class="feature-row stagger" style="--delay: 0.35s;">
+                <div class="feature-pill">CODE = POWER</div>
+                <div class="feature-pill">EARN CREDITS</div>
+                <div class="feature-pill">UNLOCK SKINS</div>
+            </div>
+            <div class="screen-foot stagger" style="--delay: 0.4s;">
+                <div class="screen-tips">
+                    <span>CTRL+ENTER TO DEPLOY</span>
+                    <span>SHORTCUTS: W OP POS</span>
+                </div>
+                <div class="version-tag">VS CODE EDITION v8.0</div>
+            </div>
         </div>
     </div>
 
     <div id="shop-screen" class="overlay hidden">
-        <h2 style="color: var(--gold-color);">BLACK MARKET</h2>
-        <div class="money-display">Account Balance: $<span id="shop-money">0</span></div>
-        <div id="shop-grid">
-            </div>
-        <button class="btn-big" style="background: #30363d; margin-top: 20px;" onclick="closeShop()">CLOSE SHOP</button>
+        <div class="screen-card shop-card">
+            <div class="screen-tag stagger" style="--delay: 0.05s;">EXTENSIONS</div>
+            <div class="screen-title stagger" style="--delay: 0.1s;">LOADOUT</div>
+            <div class="screen-sub stagger" style="--delay: 0.15s;">UNLOCK VISUAL SKINS FOR THE RUNNER.</div>
+            <div class="shop-credit stagger" style="--delay: 0.2s;">CREDITS: $<span id="shop-money">0</span></div>
+            <div id="shop-grid" class="stagger" style="--delay: 0.25s;"></div>
+            <button class="btn stagger" style="--delay: 0.3s;" onclick="closeShop()">CLOSE</button>
+        </div>
     </div>
 
-    <div id="game-wrapper">
-        <div id="game-container">
-            <div id="ui-layer">
-                <div class="badge">LVL: <span id="lvl-display">1</span></div>
-                <div id="hint-text" style="background:rgba(0,0,0,0.7); padding:5px; border-radius:4px; font-size:12px; max-width: 400px; text-align: center;">...</div>
-                <div class="badge" style="border-color: var(--gold-color); color: var(--gold-color);">$: <span id="score-display">0</span></div>
+    <div id="main-wrapper">
+        <div id="game-border">
+            <div id="game-container">
+                <div class="mission-complete" id="mission-msg">CODE COMPILED</div>
+                
+                <div id="ui-layer">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div id="btn-home" onclick="goHome()">HOME</div>
+                        <div class="badge">LEVEL <span id="lvl-display" style="color:var(--accent-cyan); margin-left:5px;">1</span></div>
+                    </div>
+                    <div class="badge" style="border-color: var(--accent-gold); color: var(--accent-gold);">$ <span id="score-display" style="margin-left:5px;">0</span></div>
+                </div>
+
+                <div id="story-box">
+                    <div id="ai-avatar">AI</div>
+                    <div id="story-text">System Ready.</div>
+                </div>
+
+                <div id="player"></div>
+                <div id="world"></div>
             </div>
 
-            <div id="player"></div>
-            <div id="world"></div>
+            <div id="mobile-editor" class="hidden">
+                <div style="display:flex; justify-content:space-between; color:white; margin-bottom: 5px;">
+                    <span style="font-family:'Fira Code'; color:var(--accent-cyan)">TERMINAL</span>
+                    <button onclick="toggleMobileEditor()" style="background:none; border:none; color:var(--accent-pink); font-size: 20px;">X</button>
+                </div>
+                <textarea id="mobile-input" placeholder="Type 'w', 'op', 'd'..."></textarea>
+                <div style="display: flex; gap: 5px;">
+                    <button class="btn-control btn-deploy" style="flex:1;" onclick="applyCSS('mobile')">DEPLOY</button>
+                    <button class="btn-control btn-hint" style="width: 60px;" onclick="buyHint()">HINT $20</button>
+                    <button id="btn-buy-mob" class="btn-control btn-buy hidden" style="width: 90px;" onclick="buyAnswer()">SOLVE $100</button>
+                </div>
+            </div>
         </div>
 
-        <div id="editor-panel">
-            <button id="btn-shop-open" class="btn-small" onclick="openShop()">🛒</button>
-            <textarea id="css-input" placeholder="/* Enter CSS here... */"></textarea>
-            <button class="btn-small" onclick="applyCSS()">DEPLOY (Enter)</button>
+        <div id="desktop-panel">
+            <div style="display:flex; flex-direction:column; justify-content:center;">
+                <span style="font-family:'Fira Code'; font-size:12px; color:var(--text-dim); letter-spacing:2px; text-transform:uppercase;">STYLE.CSS</span>
+            </div>
+            <textarea id="pc-input" placeholder="Type 'w' for width, 'op' for opacity..."></textarea>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+                <button class="btn-control btn-deploy" style="height: 100%;" onclick="applyCSS('pc')">DEPLOY</button>
+                <div style="display:flex; gap:5px;">
+                    <button class="btn-control btn-hint" style="flex:1;" onclick="buyHint()">HINT $20</button>
+                    <button class="btn-control btn-skip" style="flex:1;" onclick="skipLevel()">SKIP $50</button>
+                    <button id="btn-buy-pc" class="btn-control btn-buy hidden" style="flex:2;" onclick="buyAnswer()">SOLVE $100</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-controls">
+            <div style="display: flex; gap: 15px;">
+                <div id="btn-left" class="touch-btn">&lt;</div>
+                <div id="btn-right" class="touch-btn">&gt;</div>
+            </div>
+            <div class="touch-btn touch-edit" onclick="toggleMobileEditor()">CODE</div>
+            <div id="btn-jump" class="touch-btn touch-jump">^</div>
         </div>
     </div>
 
     <script>
-        // --- GAME DATA & STATE ---
         const Game = {
-            level: 1,
-            money: 0,
-            skinsOwned: ['default'],
-            currentSkin: 'default',
-            isPaused: true,
+            level: 1, money: 0,
+            skinsOwned: ['default'], currentSkin: 'default',
             player: { x: 50, y: 150, vy: 0, vx: 0, jumping: false },
-            targetId: ''
+            targetId: '', isPaused: true, failCount: 0, deployAttempts: 0,
+            hintTxt: '', autoCode: '', recentTypes: []
         };
 
-        // --- SKIN DATABASE ---
         const Skins = [
             { id: 'default', name: 'Rookie', cost: 0, color: '#ff9800' },
-            { id: 'hacker', name: 'Hacker Green', cost: 200, color: '#2ea043' },
-            { id: 'cyber', name: 'Cyber Neon', cost: 500, color: '#00e5ff', shadow: '0 0 15px #00e5ff' },
-            { id: 'matrix', name: 'The Matrix', cost: 800, color: '#000', border: '1px solid #0f0' },
-            { id: 'gold', name: 'Master Gold', cost: 1500, color: '#ffd700', shadow: '0 0 20px #ffd700' }
+            { id: 'vscode', name: 'VS Code', cost: 200, color: '#007acc', border: '1px solid #fff' },
+            { id: 'matrix', name: 'Matrix', cost: 400, color: '#000', border: '1px solid #3fb950', shadow: 'inset 0 0 5px #3fb950' },
+            { id: 'pro', name: 'Pro', cost: 1000, color: '#ffd700', border: '1px solid #fff', shadow: '0 0 15px #ffd700' },
+            { id: 'holo', name: 'Holo', cost: 600, color: 'linear-gradient(135deg, #00f5d4, #00bbf9)', border: '1px solid rgba(255,255,255,0.7)', shadow: '0 0 18px rgba(0, 245, 212, 0.55)', anim: 'playerPulse 1.4s ease-in-out infinite', particle: '#00f5d4' },
+            { id: 'ember', name: 'Ember', cost: 500, color: '#ff6b35', border: '1px solid rgba(255,255,255,0.5)', shadow: '0 0 16px rgba(255, 107, 53, 0.6)', anim: 'playerFlicker 1s steps(2) infinite', particle: '#ff6b35' },
+            { id: 'volt', name: 'Volt', cost: 700, color: '#39ff14', border: '1px solid #e6ffe0', shadow: '0 0 16px rgba(57, 255, 20, 0.6)', anim: 'playerPulse 1.2s ease-in-out infinite', particle: '#39ff14' },
+            { id: 'ice', name: 'Ice', cost: 450, color: 'linear-gradient(135deg, #8ecae6, #219ebc)', border: '1px solid rgba(255,255,255,0.6)', shadow: '0 0 16px rgba(142, 202, 230, 0.6)', anim: 'playerFloat 1.6s ease-in-out infinite', particle: '#8ecae6' },
+            { id: 'storm', name: 'Storm', cost: 800, color: '#2b2d42', border: '1px solid #8d99ae', shadow: '0 0 14px rgba(141, 153, 174, 0.6)', anim: 'playerGlitch 1.1s steps(2) infinite', particle: '#8d99ae' },
+            { id: 'goldrush', name: 'Goldrush', cost: 900, color: 'linear-gradient(135deg, #ffd166, #f77f00)', border: '1px solid #fff1a8', shadow: '0 0 18px rgba(255, 209, 102, 0.6)', anim: 'playerPulse 1.5s ease-in-out infinite', particle: '#ffd166' }
         ];
 
-        // --- DOM ELEMENTS ---
+        // --- DANH SÁCH GỢI Ý KHỔNG LỒ (Hơn 30 thuộc tính) ---
+        // val: cái sẽ được điền vào (Chỉ tên thuộc tính theo yêu cầu)
+        const SNIPPETS = [
+            // Core
+            { label: 'width', val: 'width: ', key: 'w' },
+            { label: 'height', val: 'height: ', key: 'h' },
+            { label: 'background', val: 'background: ', key: 'bg' },
+            { label: 'background-color', val: 'background-color: ', key: 'bgc' },
+            { label: 'color', val: 'color: ', key: 'c' },
+            { label: 'opacity', val: 'opacity: ', key: 'op' },
+            { label: 'display', val: 'display: ', key: 'd' },
+            { label: 'visibility', val: 'visibility: ', key: 'v' },
+            
+            // Positioning
+            { label: 'position', val: 'position: ', key: 'pos' },
+            { label: 'top', val: 'top: ', key: 't' },
+            { label: 'bottom', val: 'bottom: ', key: 'b' },
+            { label: 'left', val: 'left: ', key: 'l' },
+            { label: 'right', val: 'right: ', key: 'r' },
+            { label: 'z-index', val: 'z-index: ', key: 'z' },
+            
+            // Spacing
+            { label: 'margin', val: 'margin: ', key: 'm' },
+            { label: 'margin-left', val: 'margin-left: ', key: 'ml' },
+            { label: 'padding', val: 'padding: ', key: 'p' },
+            
+            // Border & FX
+            { label: 'border', val: 'border: ', key: 'bd' },
+            { label: 'border-radius', val: 'border-radius: ', key: 'br' },
+            { label: 'box-shadow', val: 'box-shadow: ', key: 'bs' },
+            { label: 'filter', val: 'filter: ', key: 'f' },
+            { label: 'transform', val: 'transform: ', key: 'tr' },
+            
+            // Flexbox (Cho vui, làm màu)
+            { label: 'justify-content', val: 'justify-content: ', key: 'jc' },
+            { label: 'align-items', val: 'align-items: ', key: 'ai' },
+            { label: 'flex-direction', val: 'flex-direction: ', key: 'fd' }
+        ];
+
         const els = {
-            player: document.getElementById('player'),
+            pcInput: document.getElementById('pc-input'),
+            mobInput: document.getElementById('mobile-input'),
+            storyBox: document.getElementById('story-text'),
+            suggBox: document.getElementById('autocomplete-box'),
             world: document.getElementById('world'),
-            input: document.getElementById('css-input'),
-            hint: document.getElementById('hint-text'),
-            startScreen: document.getElementById('start-screen'),
-            shopScreen: document.getElementById('shop-screen'),
-            score: document.getElementById('score-display'),
-            level: document.getElementById('lvl-display'),
-            shopMoney: document.getElementById('shop-money'),
-            shopGrid: document.getElementById('shop-grid'),
-            saveMsg: document.getElementById('save-found-msg')
+            player: document.getElementById('player'),
+            btnBuyPC: document.getElementById('btn-buy-pc'),
+            btnBuyMob: document.getElementById('btn-buy-mob'),
+            missionMsg: document.getElementById('mission-msg')
         };
 
-        // --- SAVE/LOAD SYSTEM ---
-        function loadData() {
-            const saved = localStorage.getItem('css_parkour_save_v1');
-            if (saved) {
-                const data = JSON.parse(saved);
-                Game.level = data.level;
-                Game.money = data.money;
-                Game.skinsOwned = data.skinsOwned || ['default'];
-                Game.currentSkin = data.currentSkin || 'default';
-                els.saveMsg.style.display = 'block';
+        function init() {
+            const saved = localStorage.getItem('parkour_vscode_final');
+            if(saved) {
+                const d = JSON.parse(saved);
+                Game.level = d.level||1; Game.money = d.money||0; 
+                Game.skinsOwned = d.skinsOwned||['default']; Game.currentSkin = d.currentSkin||'default';
+                document.getElementById('save-msg').innerText = "WORKSPACE LOADED";
             }
-            updateUI();
-            updatePlayerSkin();
+            updateUI(); updatePlayerSkin();
+            setupAutocomplete(els.pcInput); setupAutocomplete(els.mobInput);
         }
 
         function saveData() {
-            const data = {
-                level: Game.level,
-                money: Game.money,
-                skinsOwned: Game.skinsOwned,
-                currentSkin: Game.currentSkin
-            };
-            localStorage.setItem('css_parkour_save_v1', JSON.stringify(data));
+            localStorage.setItem('parkour_vscode_final', JSON.stringify({
+                level: Game.level, money: Game.money, skinsOwned: Game.skinsOwned, currentSkin: Game.currentSkin
+            }));
+            updateUI();
         }
 
-        // --- GAME LOGIC ---
-        function startGame() {
-            els.startScreen.classList.add('hidden');
-            Game.isPaused = false;
-            generateLevel();
-            updateLoop();
+        function typeWriter(text, element) { element.innerHTML = text; }
+
+        function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function ground(width, left) { return `<div class="ground" style="width: ${width}%; left: ${left}%;"></div>`; }
+        function flag(left) { return `<div class="flag" style="left: ${left}%;"></div>`; }
+        function buildTrap() {
+            const left = rand(12, 40);
+            const width = rand(8, 14);
+            return `<div class="trap" style="left: ${left}%; width: ${width}%;"></div>`;
+        }
+        function buildDeco() {
+            const types = ['deco-spark', 'deco-chip', 'deco-ring'];
+            const count = 3 + Math.floor(Math.random() * 3);
+            let out = '';
+            for (let i = 0; i < count; i++) {
+                const type = types[Math.floor(Math.random() * types.length)];
+                const left = rand(6, 92);
+                const bottom = rand(100, 280);
+                const size = type === 'deco-ring' ? rand(22, 38) : rand(10, 20);
+                const dur = (rand(50, 120) / 10).toFixed(1);
+                const delay = (rand(0, 50) / 10).toFixed(1);
+                out += `<div class="deco ${type}" style="left:${left}%; bottom:${bottom}px; --size:${size}px; --dur:${dur}s; animation-delay:${delay}s;"></div>`;
+            }
+            return out;
+        }
+
+        const LevelTemplates = [
+            {
+                id: 'ghost',
+                minLevel: 1,
+                build: (id) => {
+                    const left = rand(22, 28);
+                    const width = rand(38, 46);
+                    const html = [
+                        ground(22, 0),
+                        `<div id="${id}" style="position: absolute; bottom: 50px; left: ${left}%; height: 40px; width: ${width}%; background: var(--accent-cyan); opacity: 0; transition: 0.5s;"></div>`,
+                        ground(25, 70),
+                        flag(90)
+                    ].join('');
+                    return {
+                        html,
+                        hint: `Target #${id}: Hidden. Try 'opacity: 1'.`,
+                        autoCode: `/* #${id} */\nopacity: 1;`,
+                        story: `ALERT: Bridge #${id} is invisible. Use opacity to reveal it.`
+                    };
+                }
+            },
+            {
+                id: 'tiny',
+                minLevel: 1,
+                build: (id) => {
+                    const left = rand(32, 40);
+                    const width = rand(130, 170);
+                    const html = [
+                        ground(24, 0),
+                        `<div id="${id}" style="position: absolute; bottom: 50px; left: ${left}%; width: ${width}px; height: 40px; background: var(--accent-cyan); transform: scale(0); transition: 0.5s;"></div>`,
+                        ground(22, 78),
+                        flag(90)
+                    ].join('');
+                    return {
+                        html,
+                        hint: `Target #${id}: Scaled down. Try 'transform: scale(1)'.`,
+                        autoCode: `/* #${id} */\ntransform: scale(1);`,
+                        story: `WARNING: Platform #${id} is scaled to zero. Restore its size.`
+                    };
+                }
+            },
+            {
+                id: 'wall',
+                minLevel: 2,
+                build: (id) => {
+                    const left = rand(46, 54);
+                    const width = rand(40, 60);
+                    const height = rand(130, 170);
+                    const html = [
+                        ground(100, 0),
+                        `<div id="${id}" style="position: absolute; bottom: 90px; left: ${left}%; width: ${width}px; height: ${height}px; background: var(--accent-pink); border: 2px solid #fff;"></div>`,
+                        flag(90)
+                    ].join('');
+                    return {
+                        html,
+                        hint: `Target #${id}: Blocking. Try 'display: none'.`,
+                        autoCode: `/* #${id} */\ndisplay: none;`,
+                        story: `BLOCKER: Wall #${id} stops the run. Remove it.`
+                    };
+                }
+            },
+            {
+                id: 'high',
+                minLevel: 1,
+                build: (id) => {
+                    const left = rand(28, 36);
+                    const width = rand(34, 44);
+                    const bottom = rand(210, 250);
+                    const html = [
+                        ground(22, 0),
+                        `<div id="${id}" style="position: absolute; bottom: ${bottom}px; left: ${left}%; width: ${width}%; height: 40px; background: var(--accent-cyan); transition: 0.5s;"></div>`,
+                        ground(20, 78),
+                        flag(90)
+                    ].join('');
+                    return {
+                        html,
+                        hint: `Target #${id}: Too high. Try 'bottom: 50px'.`,
+                        autoCode: `/* #${id} */\nbottom: 50px;`,
+                        story: `ERROR: Platform #${id} is out of reach. Drop it down.`
+                    };
+                }
+            },
+            {
+                id: 'short',
+                minLevel: 3,
+                build: (id) => {
+                    const width = rand(10, 14);
+                    const html = [
+                        ground(22, 0),
+                        `<div id="${id}" style="position: absolute; bottom: 50px; left: 25%; width: ${width}%; height: 40px; background: var(--accent-cyan); transition: 0.5s;"></div>`,
+                        ground(25, 70),
+                        flag(90)
+                    ].join('');
+                    return {
+                        html,
+                        hint: `Target #${id}: Too short. Try 'width: 45%'.`,
+                        autoCode: `/* #${id} */\nwidth: 45%;`,
+                        story: `GAP: Bridge #${id} is too short. Extend its width.`
+                    };
+                }
+            },
+            {
+                id: 'sunken',
+                minLevel: 3,
+                build: (id) => {
+                    const left = rand(30, 36);
+                    const width = rand(28, 36);
+                    const html = [
+                        ground(24, 0),
+                        `<div id="${id}" style="position: absolute; bottom: -20px; left: ${left}%; width: ${width}%; height: 40px; background: var(--accent-cyan); transition: 0.5s;"></div>`,
+                        ground(24, 72),
+                        flag(90)
+                    ].join('');
+                    return {
+                        html,
+                        hint: `Target #${id}: Sunk below floor. Try 'bottom: 50px'.`,
+                        autoCode: `/* #${id} */\nbottom: 50px;`,
+                        story: `FAULT: Platform #${id} sank under the floor. Raise it up.`
+                    };
+                }
+            },
+            {
+                id: 'flat',
+                minLevel: 4,
+                build: (id) => {
+                    const left = rand(30, 38);
+                    const width = rand(30, 40);
+                    const html = [
+                        ground(22, 0),
+                        `<div id="${id}" style="position: absolute; bottom: 50px; left: ${left}%; width: ${width}%; height: 0; background: var(--accent-cyan); transition: 0.5s;"></div>`,
+                        ground(22, 78),
+                        flag(90)
+                    ].join('');
+                    return {
+                        html,
+                        hint: `Target #${id}: Height is zero. Try 'height: 40px'.`,
+                        autoCode: `/* #${id} */\nheight: 40px;`,
+                        story: `BROKEN: Platform #${id} has zero height. Restore it.`
+                    };
+                }
+            },
+            {
+                id: 'offset',
+                minLevel: 2,
+                build: (id) => {
+                    const left = rand(55, 60);
+                    const width = rand(18, 24);
+                    const html = [
+                        ground(20, 0),
+                        `<div id="${id}" style="position: absolute; bottom: 50px; left: ${left}%; width: ${width}%; height: 40px; background: var(--accent-cyan); transition: 0.5s;"></div>`,
+                        ground(28, 66),
+                        flag(90)
+                    ].join('');
+                    return {
+                        html,
+                        hint: `Target #${id}: Misaligned. Try 'left: 35%'.`,
+                        autoCode: `/* #${id} */\nleft: 35%;`,
+                        story: `OFFSET: Platform #${id} is too far right. Pull it closer.`
+                    };
+                }
+            }
+        ];
+
+        function pickTemplate() {
+            const available = LevelTemplates.filter(t => Game.level >= t.minLevel);
+            const recent = Game.recentTypes || [];
+            let pool = available.filter(t => !recent.includes(t.id));
+            if (!pool.length) pool = available;
+            const picked = pool[Math.floor(Math.random() * pool.length)];
+            Game.recentTypes = [picked.id].concat(recent).slice(0, 2);
+            return picked;
         }
 
         function generateLevel() {
-            // Reset Player
             Game.player.x = 50; Game.player.y = 150; Game.player.vy = 0; Game.player.vx = 0;
-            els.input.value = "";
-            
-            // Random Challenge
-            const type = Math.floor(Math.random() * 4);
+            Game.failCount = 0; Game.deployAttempts = 0;
+            els.pcInput.value = ""; els.mobInput.value = "";
+            document.getElementById('mobile-editor').classList.add('hidden');
+            els.btnBuyPC.classList.add('hidden'); els.btnBuyMob.classList.add('hidden');
+            els.missionMsg.classList.remove('show');
+
             const rId = "obj-" + Math.floor(Math.random() * 999);
             Game.targetId = rId;
 
-            let html = `<div class="ground" style="width: 200px; left: 0;"></div>`;
-            
-            // THỬ THÁCH MỚI: BẪY GAI (GLITCH TRAP)
-            // Nếu level > 2 thì có tỉ lệ 50% xuất hiện bẫy
-            if (Game.level > 2 && Math.random() > 0.5) {
-                html += `<div class="trap" style="left: 150px; width: 50px;"></div>`; 
-            }
+            const template = pickTemplate();
+            const built = template.build(rId);
+            let html = built.html;
 
-            if (type === 0) { // Cầu gãy
-                const gap = 200 + Math.random() * 150;
-                html += `<div id="${rId}" style="position: absolute; bottom: 50px; left: 200px; height: 40px; width: 0px; background: transparent; transition: all 0.5s;"></div>
-                         <div class="ground" style="width: 200px; left: ${200 + gap}px;"></div>
-                         <div class="flag" style="left: ${200 + gap + 150}px;">WIN</div>`;
-                els.hint.innerHTML = `⚠ Fix <b>#${rId}</b>: Thiếu <code>width</code> và <code>background-color</code>`;
-            } else if (type === 1) { // Tường chắn
-                html += `<div class="ground" style="width: 800px; left: 0;"></div>
-                         <div id="${rId}" style="position: absolute; bottom: 90px; left: 400px; width: 60px; height: 180px; background: #da3633; border: 2px solid white;"></div>
-                         <div class="flag" style="left: 700px;">WIN</div>`;
-                els.hint.innerHTML = `⚠ Fix <b>#${rId}</b>: Chắn đường! Dùng <code>display: none</code>`;
-            } else if (type === 2) { // Margin xa
-                html += `<div id="${rId}" class="ground" style="width: 300px; left: 600px; background-color: #58a6ff;"></div>
-                         <div class="flag" style="left: 750px;">WIN</div>`;
-                 els.hint.innerHTML = `⚠ Fix <b>#${rId}</b>: Xa quá! Dùng <code>margin-left: -200px</code>`;
-            } else { // Size sai
-                 html += `<div id="${rId}" style="position: absolute; bottom: 50px; left: 250px; width: 10px; height: 10px; background: #fff; transition: all 0.5s;"></div>
-                         <div class="ground" style="width: 200px; left: 550px;"></div>
-                         <div class="flag" style="left: 700px;">WIN</div>`;
-                 els.hint.innerHTML = `⚠ Fix <b>#${rId}</b>: Bé quá! Tăng <code>width</code> và <code>height</code>`;
-            }
+            if(Game.level > 2 && Math.random() > 0.5) html += buildTrap();
+            html += buildDeco();
 
+            Game.hintTxt = built.hint;
+            Game.autoCode = built.autoCode;
             els.world.innerHTML = html;
-            els.input.focus();
+            typeWriter(built.story, els.storyBox);
         }
 
-        function applyCSS() {
-            const css = els.input.value;
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            if (Game.isPaused && Game.targetId === '') generateLevel();
+            Game.isPaused = false; updateLoop();
+        }
+
+        function goHome() {
+            Game.isPaused = true;
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function fail() {
+            Game.failCount++;
+            const border = document.getElementById('game-border');
+            border.style.borderColor = 'red';
+            border.classList.add('shake-effect');
+            setTimeout(()=>{border.style.borderColor = '#30363d'; border.classList.remove('shake-effect');}, 500);
+            
+            if(Game.failCount >= 3) {
+                els.storyBox.innerHTML = `<span class="urgent">AUTO HINT:</span> ${Game.hintTxt}`;
+            } else {
+                els.storyBox.innerHTML = `<span class="urgent">RUNTIME ERROR!</span> Retrying...`;
+            }
+            Game.player.x = 50; Game.player.y = 150; Game.player.vy = 0;
+        }
+
+        function applyCSS(mode) {
+            const val = mode === 'pc' ? els.pcInput.value : els.mobInput.value;
             const target = document.getElementById(Game.targetId);
             if(target) {
-                target.style.cssText += css;
+                target.style.cssText += val;
                 if(!target.style.position) target.style.position = 'absolute';
+                if(mode === 'mobile') toggleMobileEditor(); else els.pcInput.focus();
             }
-            document.getElementById('game-wrapper').focus();
-        }
-
-        // --- SHOP FUNCTIONS ---
-        function openShop() {
-            Game.isPaused = true;
-            els.shopScreen.classList.remove('hidden');
-            renderShop();
-        }
-
-        function closeShop() {
-            els.shopScreen.classList.add('hidden');
-            Game.isPaused = false;
-            updateLoop();
-        }
-
-        function renderShop() {
-            els.shopMoney.innerText = Game.money;
-            els.shopGrid.innerHTML = '';
             
-            Skins.forEach(skin => {
-                const isOwned = Game.skinsOwned.includes(skin.id);
-                const isSelected = Game.currentSkin === skin.id;
-                
-                const div = document.createElement('div');
-                div.className = `skin-item ${isOwned ? 'owned' : ''} ${isSelected ? 'selected' : ''}`;
-                
-                // Style preview box
-                let style = `background: ${skin.color};`;
-                if(skin.shadow) style += `box-shadow: ${skin.shadow};`;
-                if(skin.border) style += `border: ${skin.border};`;
+            Game.deployAttempts++;
+            if (Game.deployAttempts >= 5) {
+                els.storyBox.innerHTML = `<span class="urgent">CRITICAL:</span> Code not working. Buy Answer?`;
+                els.btnBuyPC.classList.remove('hidden');
+                els.btnBuyMob.classList.remove('hidden');
+            }
+        }
 
-                div.innerHTML = `
-                    <div class="skin-preview" style="${style}"></div>
-                    <div style="font-weight:bold; font-size: 14px;">${skin.name}</div>
-                    <div style="font-size: 12px; color: #8b949e; margin-top:5px;">${isOwned ? (isSelected ? "EQUIPPED" : "OWNED") : "$" + skin.cost}</div>
-                `;
+        function buyHint() {
+            if(Game.money >= 20) {
+                Game.money -= 20; saveData();
+                els.storyBox.innerHTML = `<span class="hint-text">PURCHASED HINT:</span> ${Game.hintTxt}`;
+            } else { alert("Need $20!"); }
+        }
+
+        function buyAnswer() {
+            if(Game.money >= 100) {
+                Game.money -= 100; saveData();
+                // 1. Điền code
+                els.pcInput.value = Game.autoCode; 
+                els.mobInput.value = Game.autoCode;
+                // 2. Chạy code
+                const target = document.getElementById(Game.targetId);
+                if(target) target.style.cssText += Game.autoCode;
+                // 3. Ẩn nút mua
+                els.btnBuyPC.classList.add('hidden'); els.btnBuyMob.classList.add('hidden');
+                els.storyBox.innerHTML = "<span class='success'>FIX DEPLOYED.</span>";
                 
+                // 4. Force Win sau 1 giây
+                setTimeout(() => {
+                    Game.level++; Game.money += 100; saveData(); generateLevel();
+                    els.missionMsg.classList.add('show');
+                    setTimeout(() => els.missionMsg.classList.remove('show'), 2000);
+                }, 1000);
+            } else { alert("Need $100!"); }
+        }
+        
+        function skipLevel() {
+            if(Game.money >= 50) { 
+                Game.money -= 50; saveData(); generateLevel(); 
+                els.storyBox.innerHTML = "SKIPPING LEVEL..."; 
+            } else alert("Need $50!");
+        }
+
+        // --- SHOP & UI ---
+        function openShop() { document.getElementById('shop-screen').classList.remove('hidden'); renderShop(); }
+        function closeShop() { document.getElementById('shop-screen').classList.add('hidden'); }
+        function renderShop() {
+            const grid = document.getElementById('shop-grid'); grid.innerHTML = '';
+            document.getElementById('shop-money').innerText = Game.money;
+            Skins.forEach(skin => {
+                const owned = Game.skinsOwned.includes(skin.id);
+                const active = Game.currentSkin === skin.id;
+                const div = document.createElement('div');
+                div.className = `skin-item ${owned ? 'owned' : ''} ${active ? 'selected' : ''}`;
+                let s = `background:${skin.color};`;
+                if(skin.shadow) s+=`box-shadow:${skin.shadow};`; if(skin.border) s+=`border:${skin.border};`;
+                div.innerHTML = `<div style="width:30px;height:30px;margin:0 auto 10px;border-radius:4px;${s}"></div><div style="font-family:'Orbitron';font-size:12px;">${skin.name}</div><div style="font-size:12px;margin-top:5px;color:#888;">${owned?(active?"EQUIPPED":"OWNED"):"$"+skin.cost}</div>`;
                 div.onclick = () => {
-                    if (isOwned) {
-                        Game.currentSkin = skin.id;
-                        saveData();
-                        renderShop();
-                        updatePlayerSkin();
-                    } else {
-                        if (Game.money >= skin.cost) {
-                            Game.money -= skin.cost;
-                            Game.skinsOwned.push(skin.id);
-                            Game.currentSkin = skin.id;
-                            saveData();
-                            renderShop();
-                            updatePlayerSkin();
-                        } else {
-                            alert("Không đủ tiền! Hãy cày thêm level.");
-                        }
-                    }
-                };
-                els.shopGrid.appendChild(div);
+                    if(owned) Game.currentSkin = skin.id;
+                    else if(Game.money >= skin.cost) { Game.money -= skin.cost; Game.skinsOwned.push(skin.id); Game.currentSkin = skin.id; }
+                    saveData(); renderShop(); updatePlayerSkin();
+                }
+                grid.appendChild(div);
             });
         }
-
         function updatePlayerSkin() {
-            const skinData = Skins.find(s => s.id === Game.currentSkin);
-            els.player.style.background = skinData.color;
-            els.player.style.boxShadow = skinData.shadow || `0 0 10px ${skinData.color}`;
-            els.player.style.border = skinData.border || 'none';
+            const s = Skins.find(sk => sk.id === Game.currentSkin);
+            els.player.style.background = s.color;
+            els.player.style.border = s.border || '';
+            els.player.style.boxShadow = s.shadow || '';
+            els.player.style.animation = s.anim || '';
+            els.player.style.filter = s.filter || '';
+            els.player.dataset.particle = s.particle || '#58a6ff';
+        }
+        function updateUI() { document.getElementById('lvl-display').innerText = Game.level; document.getElementById('score-display').innerText = Game.money; }
+        function toggleMobileEditor() { document.getElementById('mobile-editor').classList.toggle('hidden'); }
+
+        function spawnParticle(x, y) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = `${x + rand(-6, 6)}px`;
+            p.style.bottom = `${y}px`;
+            p.style.background = els.player.dataset.particle || '#58a6ff';
+            els.world.appendChild(p);
+            p.addEventListener('animationend', () => p.remove());
         }
 
-        // --- PHYSICS ENGINE ---
+        // --- PHYSICS ---
         function updateLoop() {
             if (Game.isPaused) return;
-
-            // Gravity & Move
-            Game.player.vy -= 1.5;
-            Game.player.y += Game.player.vy;
-            Game.player.x += Game.player.vx;
-
-            // Bounds
-            if (Game.player.x < 0) Game.player.x = 0;
-            if (Game.player.x > 770) Game.player.x = 770;
-
-            // Collisions
-            let onGround = false;
-            const obstacles = document.querySelectorAll('.ground, #world div:not(.flag):not(.trap)');
-            const traps = document.querySelectorAll('.trap');
+            Game.player.vy -= 1.5; Game.player.y += Game.player.vy; Game.player.x += Game.player.vx;
+            const cRect = document.getElementById('game-container').getBoundingClientRect();
+            if(Game.player.x < 0) Game.player.x = 0; if(Game.player.x > cRect.width-32) Game.player.x = cRect.width-32;
+            const pRect = { l:Game.player.x, r:Game.player.x+32, t:cRect.height-(Game.player.y+32), b:cRect.height-Game.player.y };
             
-            // Check Traps (Chết nếu chạm gai)
-            const pRect = { l: Game.player.x, r: Game.player.x + 32, t: 400 - (Game.player.y + 32), b: 400 - Game.player.y };
-            
-            traps.forEach(t => {
-                const r = t.getBoundingClientRect();
-                const c = document.getElementById('game-container').getBoundingClientRect();
-                const tRect = { l: r.left - c.left, r: r.right - c.left, t: r.top - c.top, b: r.bottom - c.top };
-                
-                if (pRect.r > tRect.l && pRect.l < tRect.r && pRect.b > tRect.t && pRect.t < tRect.b) {
-                    die();
-                }
+            document.querySelectorAll('.trap').forEach(t=>{
+                const r=t.getBoundingClientRect();
+                if(checkCol(pRect, {l:r.left-cRect.left, r:r.right-cRect.left, t:r.top-cRect.top, b:r.bottom-cRect.top})) fail();
             });
-
-            // Check Platforms
-            obstacles.forEach(obj => {
+            document.querySelectorAll('.ground, #world div:not(.flag):not(.trap):not(.deco)').forEach(obj=>{
                 const s = window.getComputedStyle(obj);
-                if (s.display === 'none' || s.opacity === '0' || s.visibility === 'hidden') return;
-
-                const r = obj.getBoundingClientRect();
-                const c = document.getElementById('game-container').getBoundingClientRect();
-                const oRect = { l: r.left - c.left, r: r.right - c.left, t: r.top - c.top, b: r.bottom - c.top };
-
-                if (pRect.r > oRect.l && pRect.l < oRect.r && pRect.b > oRect.t && pRect.t < oRect.b) {
-                    if (Game.player.vy <= 0 && pRect.b <= oRect.t + 20) {
-                        Game.player.y = 400 - oRect.t;
+                // Sửa lỗi: Nếu tàng hình hoặc scale=0 thì không đứng lên được
+                if (s.display === 'none' || s.opacity === '0' || s.transform === 'matrix(0, 0, 0, 0, 0, 0)') return;
+                const r=obj.getBoundingClientRect();
+                const oRect = {l:r.left-cRect.left, r:r.right-cRect.left, t:r.top-cRect.top, b:r.bottom-cRect.top};
+                if(checkCol(pRect, oRect)) {
+                    if(Game.player.vy <= 0 && pRect.b <= oRect.t + 20) {
+                        Game.player.y = cRect.height - oRect.t;
                         Game.player.vy = 0;
+                        if (Game.player.jumping) spawnParticle(Game.player.x + 16, Game.player.y + 6);
                         Game.player.jumping = false;
-                        onGround = true;
-                    } else {
-                        Game.player.x -= Game.player.vx;
                     }
+                    else { Game.player.x -= Game.player.vx; }
                 }
             });
-
-            // Fall Death
-            if (Game.player.y < -50) die();
-
-            // Win Logic
-            const flag = document.querySelector('.flag');
-            if (flag) {
-                 const r = flag.getBoundingClientRect();
-                 const c = document.getElementById('game-container').getBoundingClientRect();
-                 const fRect = { l: r.left - c.left, r: r.right - c.left, t: r.top - c.top, b: r.bottom - c.top };
-                 if (pRect.r > fRect.l && pRect.l < fRect.r && pRect.b > fRect.t && pRect.t < fRect.b) {
-                     winLevel();
-                 }
-            }
-
-            // Render
-            els.player.style.bottom = Game.player.y + 'px';
-            els.player.style.left = Game.player.x + 'px';
+            if(Game.player.y < -50) fail();
             
-            // Animation Tilt
-            const tilt = Game.player.vx > 0 ? -10 : (Game.player.vx < 0 ? 10 : 0);
-            els.player.style.transform = `skewX(${tilt}deg)`;
-
+            const flag = document.querySelector('.flag');
+            if(flag) {
+                const r=flag.getBoundingClientRect();
+                if(checkCol(pRect, {l:r.left-cRect.left, r:r.right-cRect.left, t:r.top-cRect.top, b:r.bottom-cRect.top})) {
+                    Game.level++; Game.money += 100; saveData(); generateLevel();
+                    els.missionMsg.classList.add('show');
+                    setTimeout(() => els.missionMsg.classList.remove('show'), 2000);
+                }
+            }
+            els.player.style.bottom = Game.player.y + 'px'; els.player.style.left = Game.player.x + 'px';
             requestAnimationFrame(updateLoop);
         }
+        function checkCol(a, b) { return a.r > b.l && a.l < b.r && a.b > b.t && a.t < b.b; }
 
-        function die() {
-            Game.player.x = 50;
-            Game.player.y = 150;
-            Game.player.vy = 0;
-        }
-
-        function winLevel() {
-            Game.level++;
-            Game.money += 100; // Cộng tiền
-            saveData();
-            updateUI();
-            generateLevel();
-        }
-
-        function updateUI() {
-            els.level.innerText = Game.level;
-            els.score.innerText = Game.money;
+        // --- AUTOCOMPLETE ---
+        function setupAutocomplete(input) {
+            input.addEventListener('input', function(e) {
+                const val = this.value; const lastWord = val.split(/[\s;]+/).pop();
+                if (lastWord.length < 1) { els.suggBox.style.display = 'none'; return; }
+                
+                const matches = SNIPPETS.filter(s => s.label.startsWith(lastWord) || s.key.startsWith(lastWord));
+                
+                if (matches.length > 0) {
+                    els.suggBox.innerHTML = '';
+                    matches.forEach(m => {
+                        const div = document.createElement('div'); div.className = 'suggestion-item';
+                        div.innerHTML = `<span>${m.label}</span> <span class="prop-val">prop</span>`;
+                        // CHỈ ĐIỀN TÊN, KHÔNG ĐIỀN GIÁ TRỊ
+                        div.onclick = () => { 
+                            input.value = m.val; 
+                            els.suggBox.style.display='none'; 
+                            input.focus(); 
+                        };
+                        els.suggBox.appendChild(div);
+                    });
+                    const r = input.getBoundingClientRect();
+                    els.suggBox.style.left = r.left + "px"; els.suggBox.style.bottom = (window.innerHeight - r.top + 5) + "px";
+                    els.suggBox.style.display = 'block';
+                } else els.suggBox.style.display = 'none';
+            });
+            document.addEventListener('click', e => { if(e.target !== els.suggBox && e.target !== input) els.suggBox.style.display = 'none'; });
         }
 
         // --- INPUTS ---
+        function setupTouch(id, s, e) {
+            const b = document.getElementById(id);
+            b.addEventListener('touchstart', (ev)=>{ev.preventDefault();s()}); b.addEventListener('touchend', (ev)=>{ev.preventDefault();e()});
+            b.addEventListener('mousedown', s); b.addEventListener('mouseup', e);
+        }
+        setupTouch('btn-left', ()=>Game.player.vx=-5, ()=>Game.player.vx=0);
+        setupTouch('btn-right', ()=>Game.player.vx=5, ()=>Game.player.vx=0);
+        setupTouch('btn-jump', ()=>{if(!Game.player.jumping){Game.player.vy=20;Game.player.jumping=true;spawnParticle(Game.player.x + 16, Game.player.y + 4);}}, ()=>{});
         document.addEventListener('keydown', e => {
-            if (document.activeElement === els.input && e.key !== 'Enter') return;
-            
-            if (e.key === 'ArrowLeft') Game.player.vx = -5;
-            if (e.key === 'ArrowRight') Game.player.vx = 5;
-            if (e.key === 'ArrowUp' && !Game.player.jumping) {
-                Game.player.vy = 22; Game.player.jumping = true;
-            }
-            if (e.key === 'Enter' && (e.ctrlKey || document.activeElement === els.input)) {
-                e.preventDefault(); applyCSS();
-            }
+            if(document.activeElement === els.pcInput && e.key !== 'Enter') return;
+            if(e.key === 'ArrowLeft') Game.player.vx = -5; if(e.key === 'ArrowRight') Game.player.vx = 5;
+            if(e.key === 'ArrowUp' && !Game.player.jumping) { Game.player.vy = 20; Game.player.jumping = true; spawnParticle(Game.player.x + 16, Game.player.y + 4); }
+            if(e.key === 'Enter' && e.ctrlKey) applyCSS('pc');
         });
-        document.addEventListener('keyup', e => {
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') Game.player.vx = 0;
-        });
+        document.addEventListener('keyup', e => { if(['ArrowLeft','ArrowRight'].includes(e.key)) Game.player.vx = 0; });
 
-        // Init
-        loadData();
-
+        init();
     </script>
 </body>
 </html>
+
+
+
