@@ -607,7 +607,7 @@
 
         /* AUTOCOMPLETE BOX (VS CODE STYLE) */
         #autocomplete-box { 
-            position: absolute;
+            position: fixed;
             background: rgba(14, 20, 28, 0.98);
             border: 1px solid rgba(88, 166, 255, 0.25);
             width: 250px;
@@ -686,7 +686,13 @@
             box-shadow: 0 -20px 40px rgba(0,0,0,0.6);
         }
 
-        @media (max-width: 768px) { #mobile-controls { display: flex; } #desktop-panel { display: none; } }
+        @media (max-width: 768px) {
+            #mobile-controls { display: flex; }
+            #desktop-panel { display: none; }
+            #game-container::after { animation: none; opacity: 0.2; }
+            .bg-grid { animation: none; opacity: 0.12; }
+            .bg-orb { animation: none; mix-blend-mode: normal; opacity: 0.18; }
+        }
         @media (min-width: 769px) { #mobile-editor { display: none !important; } }
         @media (max-width: 600px) {
             .screen-card { padding: 20px; }
@@ -1373,19 +1379,36 @@
                         const div = document.createElement('div'); div.className = 'suggestion-item';
                         div.innerHTML = `<span>${m.label}</span> <span class="prop-val">prop</span>`;
                         // CHỈ ĐIỀN TÊN, KHÔNG ĐIỀN GIÁ TRỊ
-                        div.onclick = () => { 
-                            input.value = m.val; 
-                            els.suggBox.style.display='none'; 
-                            input.focus(); 
+                                                div.onclick = () => {
+                            input.value = m.val;
+                            els.suggBox.style.display='none';
+                            input.focus();
                         };
+                        div.addEventListener('touchstart', (ev) => {
+                            ev.preventDefault();
+                            input.value = m.val;
+                            els.suggBox.style.display='none';
+                            input.focus();
+                        });
                         els.suggBox.appendChild(div);
                     });
-                    const r = input.getBoundingClientRect();
-                    els.suggBox.style.left = r.left + "px"; els.suggBox.style.bottom = (window.innerHeight - r.top + 5) + "px";
+                                        const r = input.getBoundingClientRect();
+                    const width = Math.min(320, Math.max(200, Math.round(r.width)));
+                    const maxH = Math.min(200, matches.length * 32 + 8);
+                    let left = Math.min(window.innerWidth - width - 10, Math.max(10, r.left));
+                    let top = r.bottom + 8;
+                    if (top + maxH > window.innerHeight - 10) {
+                        top = Math.max(10, r.top - maxH - 8);
+                    }
+                    els.suggBox.style.width = width + "px";
+                    els.suggBox.style.maxHeight = maxH + "px";
+                    els.suggBox.style.left = left + "px";
+                    els.suggBox.style.top = top + "px";
+                    els.suggBox.style.bottom = 'auto';
                     els.suggBox.style.display = 'block';
                 } else els.suggBox.style.display = 'none';
             });
-            document.addEventListener('click', e => { if(e.target !== els.suggBox && e.target !== input) els.suggBox.style.display = 'none'; });
+            document.addEventListener('click', e => { if(!els.suggBox.contains(e.target) && e.target !== input) els.suggBox.style.display = 'none'; });
         }
 
         // --- INPUTS ---
@@ -1409,6 +1432,7 @@
     </script>
 </body>
 </html>
+
 
 
 
